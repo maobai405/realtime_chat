@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
+import { Header } from "@/components/header";
+import { DotPattern } from "@/components/ui/dot-pattern";
+import { cn } from "@/lib/utils";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -18,9 +22,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${jetbrainsMono.variable} antialiased`}>
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <main className="flex min-h-screen flex-1 flex-col px-8">
+            {/* 主体背景 */}
+            <DotPattern
+              className={cn(
+                "mask-[radial-gradient(800px_circle_at_center,white,transparent)]"
+              )}
+            />
+
+            <Header />
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );
