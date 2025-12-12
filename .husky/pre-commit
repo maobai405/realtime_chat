@@ -1,84 +1,98 @@
 #!/bin/sh
-# Exit on any error
+# Enhanced pre-commit hook with detailed error reporting
+
 set -e
 
-# Check if there are any staged files
-if [ -z "$(git diff --cached --name-only)" ]; then
-  echo "No staged files to format"
+echo "🔍 检查待提交文件..."
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ -z "$STAGED_FILES" ]; then
+  echo "✅ 没有需要格式化的文件"
   exit 0
 fi
 
+echo "📝 待处理文件: $(echo "$STAGED_FILES" | wc -l) 个"
+echo "$STAGED_FILES" | sed 's/^/  - /'
+echo ""
+
 # Store the hash of staged changes to detect modifications
 STAGED_HASH=$(git diff --cached | sha256sum | cut -d' ' -f1)
-
-# Save list of staged files (handling all file states)
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
 PARTIALLY_STAGED=$(git diff --name-only)
 
 # Stash unstaged changes to preserve working directory
-# --keep-index keeps staged changes in working tree
+echo "💾 保存工作区状态..."
 git stash push --quiet --keep-index --message "pre-commit-stash" || true
 STASHED=$?
 
-# Run formatter on the staged files
-if [ -n "$STAGED_FILES" ]; then
-  # Filter to only existing files and pass to ultracite fix
-  EXISTING_FILES=$(echo "$STAGED_FILES" | while IFS= read -r file; do
-    if [ -f "$file" ]; then
-      echo "$file"
-    fi
-  done)
+# Run ultracite with detailed output capture
+echo "🔧 运行 Ultracite 代码检查和修复..."
 
-  if [ -n "$EXISTING_FILES" ]; then
-    echo "$EXISTING_FILES" | tr '\n' ' ' | xargs bun x ultracite fix
-    FORMAT_EXIT_CODE=$?
-  else
-    FORMAT_EXIT_CODE=0
-  fi
-else
-  # No staged files to format
-  FORMAT_EXIT_CODE=0
+# Capture both stdout and stderr and preserve exit code
+set +e # Temporarily disable exit on error to capture output
+ULTRACITE_OUTPUT=$(pnpm dlx ultracite fix 2>&1)
+ULTRACITE_EXIT_CODE=$?
+set -e # Re-enable exit on error
+
+# Check if ultracite made any changes
+STAGED_HASH_BEFORE=$(git diff --cached | sha256sum | cut -d' ' -f1)
+
+# Re-stage files (ultracite might have modified them)
+if [ -n "$STAGED_FILES" ]; then
+  echo "$STAGED_FILES" | while IFS= read -r file; do
+    if [ -f "$file" ]; then
+      git add "$file"
+    fi
+  done >/dev/null 2>&1
 fi
+
+# Check if any changes were made by ultracite
+STAGED_HASH_AFTER=$(git diff --cached | sha256sum | cut -d' ' -f1)
 
 # Restore working directory state
 if [ $STASHED -eq 0 ]; then
-  # Re-stage the formatted files
-  if [ -n "$STAGED_FILES" ]; then
-    echo "$STAGED_FILES" | while IFS= read -r file; do
-      if [ -f "$file" ]; then
-        git add "$file"
-      fi
-    done
-  fi
-
-  # Restore unstaged changes
+  echo "🔄 恢复工作区状态..."
   git stash pop --quiet || true
 
   # Restore partial staging if files were partially staged
   if [ -n "$PARTIALLY_STAGED" ]; then
     for file in $PARTIALLY_STAGED; do
       if [ -f "$file" ] && echo "$STAGED_FILES" | grep -q "^$file$"; then
-        # File was partially staged - need to unstage the unstaged parts
         git restore --staged "$file" 2>/dev/null || true
         git add -p "$file" </dev/null 2>/dev/null || git add "$file"
       fi
-    done
+    done >/dev/null 2>&1
+  fi
+fi
+
+# Report results
+echo ""
+echo "=== 🔍 Ultracite 执行结果 ==="
+
+if [ $ULTRACITE_EXIT_CODE -eq 0 ]; then
+  if [ "$STAGED_HASH_BEFORE" != "$STAGED_HASH_AFTER" ]; then
+    echo "✅ 代码格式化完成"
+    echo "🔧 已修复以下文件:"
+    echo "$STAGED_FILES" | sed 's/^/  ✨ /'
+  else
+    echo "✅ 代码格式良好，无需修改"
   fi
 else
-  # No stash was created, just re-add the formatted files
-  if [ -n "$STAGED_FILES" ]; then
-    echo "$STAGED_FILES" | while IFS= read -r file; do
-      if [ -f "$file" ]; then
-        git add "$file"
-      fi
-    done
-  fi
+  echo "❌ 代码检查失败！"
+  echo ""
+  echo "📋 详细错误信息:"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  printf '%s\n' "$ULTRACITE_OUTPUT"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+  echo "🔧 修复建议:"
+  echo "   1. 检查上述错误信息并修复代码问题"
+  echo "   2. 运行 'pnpm dlx ultracite fix' 手动修复格式问题"
+  echo "   3. 修复后重新添加文件: git add <文件名>"
+  echo "   4. 重新提交: git commit"
+  echo ""
+  echo "❌ 提交已阻止，请修复错误后重新提交"
+  exit $ULTRACITE_EXIT_CODE
 fi
 
-# Check if staged files actually changed
-NEW_STAGED_HASH=$(git diff --cached | sha256sum | cut -d' ' -f1)
-if [ "$STAGED_HASH" != "$NEW_STAGED_HASH" ]; then
-  echo "✨ Files formatted by Ultracite"
-fi
-
-exit $FORMAT_EXIT_CODE
+echo ""
+echo "🎉 Pre-commit 检查完成！"
