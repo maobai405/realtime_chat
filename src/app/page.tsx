@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/input-group";
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { ShineBorder } from "@/components/ui/shine-border";
+import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
@@ -19,6 +20,8 @@ export default function Home() {
       <Card className="relative flex w-full max-w-sm flex-col items-center gap-8 rounded-4xl p-8">
         {/* 魔法边框效果 */}
         <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
+        {/* 平滑光斑效果 */}
+        <SmoothCursor />
 
         {/* Header */}
         <div className="flex flex-col items-center">
