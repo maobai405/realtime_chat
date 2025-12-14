@@ -1,5 +1,7 @@
 "use client";
 
+import { atom, useAtom } from "jotai";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   InputGroup,
@@ -7,13 +9,15 @@ import {
   InputGroupInput,
   InputGroupText,
 } from "@/components/ui/input-group";
-import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { ShineBorder } from "@/components/ui/shine-border";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { cn } from "@/lib/utils";
 
+const inputRoomIdAtom = atom("");
+
 export default function Home() {
-  const inputRoomId = "001"; // TODO: 绑定输入框状态
+  const [inputRoomId, setInputRoomId] = useAtom(inputRoomIdAtom);
+
   return (
     <div className="flex flex-1 items-center justify-center">
       {/* 加入房间卡片 */}
@@ -56,34 +60,51 @@ export default function Home() {
                 <span className="icon-[line-md--hash] text-zinc-500 transition-colors duration-300 group-focus-within:text-indigo-400" />
               </InputGroupText>
             </InputGroupAddon>
+
             <InputGroupInput
               autoFocus
-              placeholder="请输入房间 ID" // onChange={(e) => setInputRoomId(e.target.value)}
+              onChange={(e) => setInputRoomId(e.target.value.trim())}
+              placeholder="请输入房间 ID"
             />
           </InputGroup>
 
-          <InteractiveHoverButton
+          <Button
             className={cn(
               "h-12 rounded-2xl font-semibold text-sm transition-all duration-300",
-              inputRoomId.trim()
+              inputRoomId
                 ? [
                     // 亮色模式
-                    "bg-zinc-900 text-white shadow-indigo-500/10 shadow-lg hover:scale-[1.02] hover:shadow-indigo-500/25",
+                    "bg-indigo-500 text-white shadow-indigo-500/20 shadow-lg hover:scale-[1.02] hover:bg-indigo-600 hover:shadow-indigo-500/30",
                     // 暗色模式
-                    "dark:bg-white dark:text-zinc-950",
+                    "dark:bg-indigo-400 dark:text-white",
                   ]
                 : [
                     // 亮色模式 - 禁用状态
-                    "cursor-not-allowed bg-zinc-100 text-zinc-400",
+                    "cursor-not-allowed bg-zinc-200 text-zinc-500",
                     // 暗色模式 - 禁用状态
-                    "dark:bg-zinc-800 dark:text-zinc-600",
+                    "dark:bg-zinc-700 dark:text-zinc-500",
                   ]
             )}
-            disabled={!inputRoomId.trim()}
-            type="button"
+            disabled={!inputRoomId}
           >
             加入房间
-          </InteractiveHoverButton>
+          </Button>
+
+          <div className="text-center">or</div>
+
+          <Button
+            className={cn(
+              "h-12 rounded-2xl font-semibold text-sm transition-all duration-300",
+              [
+                // 亮色模式
+                "bg-indigo-500 text-white shadow-indigo-500/20 shadow-lg hover:scale-[1.02] hover:bg-indigo-600 hover:shadow-indigo-500/30",
+                // 暗色模式
+                "dark:bg-indigo-400 dark:text-white",
+              ]
+            )}
+          >
+            创建房间
+          </Button>
         </form>
       </Card>
     </div>
