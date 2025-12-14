@@ -3,6 +3,7 @@ import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/header";
+import { Providers } from "@/components/providers";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { cn } from "@/lib/utils";
 
@@ -24,20 +25,22 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${jetbrainsMono.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className="flex min-h-screen flex-1 flex-col px-8">
-            {/* 主体背景 */}
-            <DotPattern
-              className={cn(
-                "mask-[radial-gradient(800px_circle_at_center,white,transparent)]"
-              )}
-            />
+        <Providers>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <main className="flex min-h-screen flex-1 flex-col px-8">
+              {/* 主体背景 */}
+              <DotPattern
+                className={cn(
+                  "mask-[radial-gradient(800px_circle_at_center,white,transparent)]"
+                )}
+              />
 
-            <Header />
+              <Header />
 
-            {children}
-          </main>
-        </ThemeProvider>
+              {children}
+            </main>
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

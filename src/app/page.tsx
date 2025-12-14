@@ -1,6 +1,9 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
+import { nanoid } from "nanoid";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -11,12 +14,27 @@ import {
 } from "@/components/ui/input-group";
 import { ShineBorder } from "@/components/ui/shine-border";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
+import { api } from "@/lib/eden";
 import { cn } from "@/lib/utils";
 
 const inputRoomIdAtom = atom("");
 
 export default function Home() {
   const [inputRoomId, setInputRoomId] = useAtom(inputRoomIdAtom);
+  const router = useRouter();
+
+  const { mutate: createRoom } = useMutation({
+    mutationFn: async () => {
+      const response = await api.rooms.create.post();
+      if (response.status === 200) {
+        router.push(`/room/${response.data?.roomId}`);
+      }
+    },
+  });
+
+  const handleClickRoom = () => {
+    console.log("nanoid", nanoid());
+  };
 
   return (
     <div className="flex flex-1 items-center justify-center">
@@ -86,6 +104,8 @@ export default function Home() {
                   ]
             )}
             disabled={!inputRoomId}
+            onClick={handleClickRoom}
+            type="button"
           >
             加入房间
           </Button>
@@ -102,6 +122,8 @@ export default function Home() {
                 "dark:bg-indigo-400 dark:text-white",
               ]
             )}
+            onClick={() => createRoom()}
+            type="button"
           >
             创建房间
           </Button>
