@@ -1,0 +1,12 @@
+{
+  "extends": "@workspace/typescript-config/frontend.json",
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@workspace/ui/*": ["../../packages/ui/src/*"]
+    }
+  },
+  "include": ["src"]
+}
