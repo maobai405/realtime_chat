@@ -1,5 +1,5 @@
 #!/bin/sh
-# Enhanced pre-commit hook with detailed error reporting
+# 增强的pre-commit钩子，提供详细的错误报告
 
 set -e
 
@@ -15,28 +15,31 @@ echo "📝 待处理文件: $(echo "$STAGED_FILES" | wc -l) 个"
 echo "$STAGED_FILES" | sed 's/^/  - /'
 echo ""
 
-# Store the hash of staged changes to detect modifications
+# 存储暂存更改的哈希以检测修改
 STAGED_HASH=$(git diff --cached | sha256sum | cut -d' ' -f1)
 PARTIALLY_STAGED=$(git diff --name-only)
 
-# Stash unstaged changes to preserve working directory
+# 暂存未暂存的更改以保留工作目录
 echo "💾 保存工作区状态..."
 git stash push --quiet --keep-index --message "pre-commit-stash" || true
 STASHED=$?
 
-# Run ultracite with detailed output capture
+# 运行Ultracite并捕获详细输出
 echo "🔧 运行 Ultracite 代码检查和修复..."
 
-# Capture both stdout and stderr and preserve exit code
-set +e # Temporarily disable exit on error to capture output
+# 捕获stdout和stderr并保留退出码
+set +e # 暂时禁用错误退出功能，以便捕获输出信息。
 ULTRACITE_OUTPUT=$(pnpm dlx ultracite fix 2>&1)
 ULTRACITE_EXIT_CODE=$?
-set -e # Re-enable exit on error
+set -e # 重新启用错误退出功能
 
-# Check if ultracite made any changes
+# 检查Ultracite是否发现了任何错误（即使这些错误是可以修复的）
+if echo "$ULTRACITE_OUTPUT" | grep -q "Found [1-9]"; then
+  ULTRACITE_EXIT_CODE=1
+fi
 STAGED_HASH_BEFORE=$(git diff --cached | sha256sum | cut -d' ' -f1)
 
-# Re-stage files (ultracite might have modified them)
+# 重新暂存文件（Ultracite可能已修改它们）
 if [ -n "$STAGED_FILES" ]; then
   echo "$STAGED_FILES" | while IFS= read -r file; do
     if [ -f "$file" ]; then
@@ -45,15 +48,15 @@ if [ -n "$STAGED_FILES" ]; then
   done >/dev/null 2>&1
 fi
 
-# Check if any changes were made by ultracite
+# 检查Ultracite是否进行了任何更改
 STAGED_HASH_AFTER=$(git diff --cached | sha256sum | cut -d' ' -f1)
 
-# Restore working directory state
+# 恢复工作目录状态
 if [ $STASHED -eq 0 ]; then
   echo "🔄 恢复工作区状态..."
   git stash pop --quiet || true
 
-  # Restore partial staging if files were partially staged
+  # 如果文件被部分暂存，则恢复部分暂存
   if [ -n "$PARTIALLY_STAGED" ]; then
     for file in $PARTIALLY_STAGED; do
       if [ -f "$file" ] && echo "$STAGED_FILES" | grep -q "^$file$"; then
@@ -64,7 +67,7 @@ if [ $STASHED -eq 0 ]; then
   fi
 fi
 
-# Report results
+# 报告结果
 echo ""
 echo "=== 🔍 Ultracite 执行结果 ==="
 
