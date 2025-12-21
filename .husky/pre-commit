@@ -29,7 +29,7 @@ echo "🔧 运行 Ultracite 代码检查和修复..."
 
 # 捕获stdout和stderr并保留退出码
 set +e # 暂时禁用错误退出功能，以便捕获输出信息。
-ULTRACITE_OUTPUT=$(pnpm dlx ultracite fix 2>&1)
+ULTRACITE_OUTPUT=$(bunx ultracite fix 2>&1)
 ULTRACITE_EXIT_CODE=$?
 set -e # 重新启用错误退出功能
 

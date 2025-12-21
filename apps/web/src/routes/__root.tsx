@@ -7,8 +7,11 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { DotPattern } from "@workspace/ui/components/dot-pattern";
+import { cn } from "@workspace/ui/lib/utils";
 import globalsCss from "@workspace/ui/styles/globals.css?url";
-import { GeneralError } from "@/features/errors/general-error";
+import { GeneralError } from "@/features/components/errors/general-error";
+import { Header } from "@/features/components/header";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -39,7 +42,18 @@ function RootLayout() {
         <HeadContent />
       </head>
       <body>
-        <Outlet />
+        <main className="flex min-h-screen flex-1 flex-col px-8">
+          {/* 主体背景 */}
+          <DotPattern
+            className={cn(
+              "mask-[radial-gradient(800px_circle_at_center,white,transparent)]"
+            )}
+          />
+
+          <Header />
+
+          <Outlet />
+        </main>
 
         {import.meta.env.MODE === "development" && (
           <TanStackDevtools
