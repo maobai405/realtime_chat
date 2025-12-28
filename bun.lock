@@ -13,13 +13,14 @@
         "ultracite": "^6.4.0",
       },
     },
-    "apps/app": {
-      "name": "app",
+    "apps/api": {
+      "name": "api",
       "version": "1.0.50",
       "dependencies": {
         "elysia": "latest",
       },
       "devDependencies": {
+        "@workspace/typescript-config": "workspace:*",
         "bun-types": "latest",
       },
     },
@@ -27,6 +28,7 @@
       "name": "web",
       "version": "0.0.1",
       "dependencies": {
+        "@elysiajs/eden": "^1.4.6",
         "@tanstack/react-devtools": "^0.8.4",
         "@tanstack/react-query": "^5.90.12",
         "@tanstack/react-query-devtools": "^5.91.1",
@@ -34,6 +36,7 @@
         "@tanstack/react-router-devtools": "^1.141.2",
         "@tanstack/react-router-ssr-query": "^1.141.2",
         "@tanstack/react-start": "^1.141.3",
+        "@workspace/api-types": "workspace:*",
         "@workspace/ui": "workspace:*",
         "es-toolkit": "^1.43.0",
         "jotai": "^2.16.0",
@@ -50,10 +53,21 @@
         "@types/react-dom": "^19.2.3",
         "@vitejs/plugin-react": "^5.1.2",
         "@workspace/typescript-config": "workspace:*",
+        "elysia": "^1.4.19",
         "tailwindcss": "^4.1.18",
         "typescript": "^5.9.3",
         "vite": "^7.3.0",
         "vite-tsconfig-paths": "^6.0.1",
+      },
+    },
+    "packages/api-types": {
+      "name": "@workspace/api-types",
+      "version": "1.0.0",
+      "dependencies": {
+        "elysia": "latest",
+      },
+      "devDependencies": {
+        "api": "workspace:*",
       },
     },
     "packages/typescript-config": {
@@ -188,6 +202,8 @@
     "@cspotcode/source-map-support": ["@cspotcode/source-map-support@0.8.1", "", { "dependencies": { "@jridgewell/trace-mapping": "0.3.9" } }, "sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw=="],
 
     "@cyberalien/svg-utils": ["@cyberalien/svg-utils@1.0.11", "", { "dependencies": { "@iconify/types": "^2.0.0" } }, "sha512-qEE9mnyI+avfGT3emKuRs3ucYkITeaV0Xi7VlYN41f+uGnZBecQP3jwz/AF437H9J4Q7qPClHKm4NiTYpNE6hA=="],
+
+    "@elysiajs/eden": ["@elysiajs/eden@1.4.6", "", { "peerDependencies": { "elysia": ">=1.4.19" } }, "sha512-Tsa4NwXEWg/u73vWiYZQ3L5/ecgZSxqiEjYwpS+4qBKXeTZqZKl2hcgHJSVBL+InEDMi35Xugct7qyAXE5oM4Q=="],
 
     "@emnapi/core": ["@emnapi/core@1.7.1", "", { "dependencies": { "@emnapi/wasi-threads": "1.1.0", "tslib": "^2.4.0" } }, "sha512-o1uhUASyo921r2XtHYOHy7gdkGLge8ghBEQHMWmyJFoXlpU58kIrhhN3w26lpQb6dspetweapMn2CSNwQ8I4wg=="],
 
@@ -569,6 +585,8 @@
 
     "@vitejs/plugin-react": ["@vitejs/plugin-react@5.1.2", "", { "dependencies": { "@babel/core": "^7.28.5", "@babel/plugin-transform-react-jsx-self": "^7.27.1", "@babel/plugin-transform-react-jsx-source": "^7.27.1", "@rolldown/pluginutils": "1.0.0-beta.53", "@types/babel__core": "^7.20.5", "react-refresh": "^0.18.0" }, "peerDependencies": { "vite": "^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0" } }, "sha512-EcA07pHJouywpzsoTUqNh5NwGayl2PPVEJKUSinGGSxFGYn+shYbqMGBg6FXDqgXum9Ou/ecb+411ssw8HImJQ=="],
 
+    "@workspace/api-types": ["@workspace/api-types@workspace:packages/api-types"],
+
     "@workspace/typescript-config": ["@workspace/typescript-config@workspace:packages/typescript-config"],
 
     "@workspace/ui": ["@workspace/ui@workspace:packages/ui"],
@@ -591,7 +609,7 @@
 
     "anymatch": ["anymatch@3.1.3", "", { "dependencies": { "normalize-path": "^3.0.0", "picomatch": "^2.0.4" } }, "sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw=="],
 
-    "app": ["app@workspace:apps/app"],
+    "api": ["api@workspace:apps/api"],
 
     "arg": ["arg@4.1.3", "", {}, "sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA=="],
 

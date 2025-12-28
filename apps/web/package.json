@@ -11,6 +11,7 @@
     "fix": "ultracite fix"
   },
   "dependencies": {
+    "@elysiajs/eden": "^1.4.6",
     "@tanstack/react-devtools": "^0.8.4",
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-query-devtools": "^5.91.1",
@@ -18,6 +19,7 @@
     "@tanstack/react-router-devtools": "^1.141.2",
     "@tanstack/react-router-ssr-query": "^1.141.2",
     "@tanstack/react-start": "^1.141.3",
+    "@workspace/api-types": "workspace:*",
     "@workspace/ui": "workspace:*",
     "es-toolkit": "^1.43.0",
     "jotai": "^2.16.0",
@@ -34,6 +36,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "@workspace/typescript-config": "workspace:*",
+    "elysia": "^1.4.19",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "^7.3.0",
