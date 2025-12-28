@@ -1,0 +1,7 @@
+{
+  "extends": "@workspace/typescript-config/backend.json",
+  "compilerOptions": {
+    "types": ["bun-types"]
+  },
+  "include": ["src"]
+}
