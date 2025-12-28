@@ -8,7 +8,6 @@ import {
   InputGroupText,
 } from "@workspace/ui/components/input-group";
 import { ShineBorder } from "@workspace/ui/components/shine-border";
-import { SmoothCursor } from "@workspace/ui/components/smooth-cursor";
 import { cn } from "@workspace/ui/lib/utils";
 import { atom, useAtom } from "jotai";
 import { nanoid } from "nanoid";
@@ -38,8 +37,6 @@ export default function Home() {
       <Card className="relative flex w-full max-w-sm flex-col items-center gap-8 rounded-4xl p-8">
         {/* 魔法边框效果 */}
         <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
-        {/* 平滑光斑效果 */}
-        <SmoothCursor />
 
         {/* Header */}
         <div className="flex flex-col items-center">
