@@ -3,7 +3,11 @@
   "compilerOptions": {
     "composite": true,
     "declaration": true,
-    "types": ["bun-types"]
+    "types": ["bun-types"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"]
 }

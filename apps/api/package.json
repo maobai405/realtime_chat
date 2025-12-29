@@ -4,10 +4,13 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --env-file=../../.env --watch src/index.ts"
   },
   "dependencies": {
-    "elysia": "latest"
+    "@elysiajs/cors": "^1.4.1",
+    "@upstash/redis": "^1.36.0",
+    "elysia": "latest",
+    "nanoid": "^5.1.6"
   },
   "devDependencies": {
     "@workspace/typescript-config": "workspace:*",
