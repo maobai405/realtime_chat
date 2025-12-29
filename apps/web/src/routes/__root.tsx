@@ -7,7 +7,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { DotPattern } from "@workspace/ui/components/dot-pattern";
+import { DotPattern } from "@workspace/ui/components";
 import { cn } from "@workspace/ui/lib/utils";
 import globalsCss from "@workspace/ui/styles/globals.css?url";
 import { GeneralError } from "@/features/components/errors/general-error";

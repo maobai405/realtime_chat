@@ -1,16 +1,18 @@
 import { useMutation } from "@tanstack/react-query";
-import { Button } from "@workspace/ui/components/button";
-import { Card } from "@workspace/ui/components/card";
 import {
+  Button,
+  Card,
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
   InputGroupText,
-} from "@workspace/ui/components/input-group";
-import { ShineBorder } from "@workspace/ui/components/shine-border";
+  ShineBorder,
+  Spinner,
+} from "@workspace/ui/components";
 import { cn } from "@workspace/ui/lib/utils";
 import { atom, useAtom } from "jotai";
 import { nanoid } from "nanoid";
+import { api } from "@/lib/api-client";
 
 const inputRoomIdAtom = atom("");
 
@@ -18,9 +20,10 @@ export default function Home() {
   const [inputRoomId, setInputRoomId] = useAtom(inputRoomIdAtom);
   // const router = useRouter();
 
-  const { mutate: createRoom } = useMutation({
+  const { mutate: createRoom, isPending } = useMutation({
     mutationFn: async () => {
-      // const response = await api.room.create.post();
+      const response = await api.room.create.post();
+      console.log("response", response);
       // if (response.status === 200) {
       // router.push(`/room/${response.data?.roomId}`);
       // }
@@ -108,17 +111,20 @@ export default function Home() {
           <Button
             className={cn(
               "h-12 rounded-2xl font-semibold text-sm transition-all duration-300",
-              [
-                // 亮色模式
-                "bg-indigo-500 text-white shadow-indigo-500/20 shadow-lg hover:scale-[1.02] hover:bg-indigo-600 hover:shadow-indigo-500/30",
-                // 暗色模式
-                "dark:bg-indigo-400 dark:text-white",
-              ]
+              isPending
+                ? "cursor-not-allowed opacity-50"
+                : [
+                    // 亮色模式
+                    "bg-indigo-500 text-white shadow-indigo-500/20 shadow-lg hover:scale-[1.02] hover:bg-indigo-600 hover:shadow-indigo-500/30",
+                    // 暗色模式
+                    "dark:bg-indigo-400 dark:text-white",
+                  ]
             )}
+            disabled={isPending}
             onClick={() => createRoom()}
             type="button"
           >
-            创建房间
+            {isPending ? <Spinner /> : "创建房间"}
           </Button>
         </form>
       </Card>

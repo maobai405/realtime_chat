@@ -1,6 +1,8 @@
-import { AnimatedGradientText } from "@workspace/ui/components/animated-gradient-text";
-import { AnimatedThemeToggler } from "@workspace/ui/components/animated-theme-toggler";
-import { TypingAnimation } from "@workspace/ui/components/typing-animation";
+import {
+  AnimatedGradientText,
+  AnimatedThemeToggler,
+  TypingAnimation,
+} from "@workspace/ui/components";
 
 /**
  * Header组件
